@@ -1,0 +1,77 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+int randn(int n)
+{
+	return rand() % n;
+}
+
+void createMatrix(int** &mat, int n, int m)
+{
+	mat = new int*[n];
+	for (int i = 0; i < n; i++) mat[i] = new int[m];
+}
+
+void zeroMatrix(int** mat, int n, int m)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++) mat[i][j] = 0;
+	}
+}
+
+void fillMatrix(int** mat, int n, int m)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++) mat[i][j] = randn(10) + 1;
+	}
+}
+
+void printMatrix(int** mat, int n, int m)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++) cout << mat[i][j] << " ";
+		cout << endl;
+	}
+	cout << endl;
+}
+
+void swapRaws(int** mat, int m, int a, int b)
+{
+	for (int i = 0; i < m; i++) swap(mat[a][i], mat[b][i]);
+}
+
+void delMatrix(int** mat)
+{
+	delete[] mat[0];
+	delete[] mat;
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	srand(time(0));
+
+	cout << "Введите количство строк и столбцов матрицы: \n";
+	int n, m; cin >> n >> m;
+	int **mat;
+	createMatrix(mat, n, m);
+	zeroMatrix(mat, n, m);
+	printMatrix(mat, n, m);
+	fillMatrix(mat, n, m);
+	printMatrix(mat, n, m);
+
+	cout << "Введите, какие строки матрицы хотите поменять местами: \n";
+	int a, b; cin >> a >> b;
+	swapRaws(mat, m, a-1, b-1);
+	printMatrix(mat, n, m);
+
+	delMatrix(mat);
+
+	system("pause");
+	return 0;
+}
