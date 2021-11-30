@@ -1,0 +1,83 @@
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+using namespace std;
+
+int randN(int n)
+{
+	return rand() % n + 1;
+}
+
+void printArr(int* array, const int size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		cout << array[i] << " ";
+	}
+	cout << endl;
+}
+
+void arProg(int* array, const int size)
+{
+	cout << "Введите первый элемент и разность арфимитической прогрессии\n";
+	int el, raz; cin >> el >> raz;
+	for (int i = 0; i < size; i++)
+	{
+		array[i] = el;
+		el += raz;
+	}
+}
+
+void randPer(int* array, const int size)
+{
+	for (int i = 1; i <= size; i++)
+	{
+		array[i - 1] = i;
+	}
+
+	int tmp, num;
+
+	for (int i = 0; i < size; i++)
+	{
+		tmp = array[i];
+		num = randN(size) - 1;
+		array[i] = array[num];
+		array[num] = tmp;
+	}
+}
+
+void fillThous(int* array, const int size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		array[i] = randN(1000) + 1000;
+	}
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	srand(time(0));
+
+	int n; cout << "Введите размер массива\n"; cin >> n;
+	int* A = new int[n];
+
+	arProg(A, n);
+	printArr(A, n);
+	delete[] A;
+	cout << "Введите размер массива\n"; cin >> n;
+	A = new int[n];
+
+	randPer(A, n);
+	printArr(A, n);
+	delete[] A;
+	cout << "Введите размер массива\n"; cin >> n;
+	A = new int[n];
+
+	fillThous(A, n);
+	printArr(A, n);
+	delete[] A;
+
+	system("pause");
+	return 0;
+}
