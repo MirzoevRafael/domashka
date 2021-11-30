@@ -1,0 +1,22 @@
+#include <iostream>
+using namespace std;
+
+void dig(int num)
+{
+	if (num == 0) return;
+	dig(num / 10);
+	cout << num % 10 << " ";
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+
+	cout << "Введите число\n";
+	int n; cin >> n;
+
+	dig(n);
+
+	system("pause");
+	return 0;
+}
