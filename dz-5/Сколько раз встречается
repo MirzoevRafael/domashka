@@ -1,0 +1,78 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+int randn(int n)
+{
+	return rand() % n;
+}
+
+void createMatrix(int** &mat, int n, int m)
+{
+	mat = new int*[n];
+	for (int i = 0; i < n; i++) mat[i] = new int[m];
+}
+
+void zeroMatrix(int** mat, int n, int m)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++) mat[i][j] = 0;
+	}
+}
+
+void fillMatrix(int** mat, int n, int m)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++) mat[i][j] = randn(10) + 1;
+	}
+}
+
+void printMatrix(int** mat, int n, int m)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++) cout << mat[i][j] << " ";
+		cout << endl;
+	}
+	cout << endl;
+}
+
+void delMatrix(int** mat)
+{
+	delete[] mat[0];
+	delete[] mat;
+}
+
+int howMuch(int** mat, int n, int m, int x)
+{
+	int count = 0;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++) if (mat[i][j] == x) count++;
+	return count;
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	srand(time(0));
+
+	cout << "Введите количство строк и столбцов матрицы: \n";
+	int n, m; cin >> n >> m;
+	int **mat;
+	createMatrix(mat, n, m);
+	zeroMatrix(mat, n, m);
+	printMatrix(mat, n, m);
+	fillMatrix(mat, n, m);
+	printMatrix(mat, n, m);
+
+	cout << "Введите искомый элемент: \n";
+	int x; cin >> x;
+	cout << "Данный элемент встречается в матрице " << howMuch(mat, n, m, x) << " раз(а)\n";
+
+	delMatrix(mat);
+	system("pause");
+	return 0;
+}
