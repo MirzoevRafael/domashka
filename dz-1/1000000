@@ -1,0 +1,66 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+	setlocale(LC_ALL, "Russian");
+
+	int month, day;
+	cin >> month >> day;
+
+	while ((month > 12) || (month < 1) || ((month == 2) && (day > 28)) || (((month == 4) || (month == 6) || (month == 9) || (month == 11)) && (day > 30)) || (day > 31) || (day < 1)) {
+		cout << "Введены некорректные данные\n";
+		cin >> month >> day;
+	}
+
+	if (month == 1) {
+		cout << 365 - day << " дней до Нового года";
+	}
+
+	else if (month == 2) {
+		cout << 365 - (31 + day) << " дней до Нового года";
+	}
+
+	else if (month == 3) {
+		cout << 365 - (59 + day) << " дней до Нового года";
+	}
+
+	else if (month == 4) {
+		cout << 365 - (90 + day) << " дней до Нового года";
+	}
+
+	else if (month == 5) {
+		cout << 365 - (120 + day) << " дней до Нового года";
+	}
+
+	else if (month == 6) {
+		cout << 365 - (151 + day) << " дней до Нового года";
+	}
+
+	else if (month == 7) {
+		cout << 365 - (181 + day) << " дней до Нового года";
+	}
+
+	else if (month == 8) {
+		cout << 365 - (212 + day) << " дней до Нового года";
+	}
+
+	else if (month == 9) {
+		cout << 365 - (243 + day) << " дней до Нового года";
+	}
+
+	else if (month == 10) {
+		cout << 365 - (273 + day) << " дней до Нового года";
+	}
+
+	else if (month == 11) {
+		cout << 365 - (304 + day) << " дней до Нового года";
+	}
+
+	else if (month == 12) {
+		cout << 365 - (334 + day) << " дней до Нового года";
+	}
+
+	system("pause");
+
+	return 0;
+}
