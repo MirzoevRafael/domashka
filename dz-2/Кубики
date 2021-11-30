@@ -1,0 +1,23 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+void dice() 
+{
+	int fst = rand() % 6 + 1;
+	int snd = rand() % 6 + 1;
+	
+	cout << fst << endl << snd << endl << fst + snd << endl;
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	srand(time(0));
+
+	dice();
+
+	system("pause");
+	return 0;
+}
