@@ -1,0 +1,32 @@
+#include <iostream>
+using namespace std;
+
+int del(int num)
+{
+	int sumDel = 0;
+	for (int i = 1; i <= (num / 2); i++)
+	{
+		if (num % i == 0)
+		{
+			sumDel += i;
+		}
+	}
+
+	return sumDel;
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+
+	for (int i = 2; i <= 10000; i++)
+	{
+		if ((i == del(del(i))) && (i != del(i))
+		{
+			cout << i << " " << del(i) << endl;
+		}
+	}
+
+	system("pause");
+	return 0;
+}
