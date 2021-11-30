@@ -1,0 +1,25 @@
+#include <iostream>
+using namespace std;
+
+int binToDen(int bin)
+{
+	int static count = -1;
+	count++;
+
+	if (bin == 0) return 0;
+
+	return (bin % 10) * pow(2, count) + binToDen(bin / 10);
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+
+	cout << "Введите двоичное число\n";
+	int n; cin >> n;
+
+	cout << binToDen(n);
+
+	system("pause");
+	return 0;
+}
