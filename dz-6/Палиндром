@@ -4,6 +4,13 @@
 #include <cstdlib>
 using namespace std;
 
+bool palindrom(char *str, int len)
+{
+	for (int i = 0; i < (strlen(str) / 2); i++)
+		if (str[i] != str[strlen(str) - (i + 1)]) return false;
+	return true;
+}
+
 int main()
 {
 	SetConsoleCP(1251);
@@ -12,11 +19,8 @@ int main()
 
 	char str[80];
 	cin.get(str, (unsigned)_countof(str));
-	bool pal = true;
 
-	for (int i = 0; i < (strlen(str) / 2); i++)
-		if (str[i] != str[strlen(str) - (i + 1)]) pal = false;
-	if (pal == true) cout << "Палиндром\n";
+	if (palindrom(str, strlen(str))) cout << "Палиндром\n";
 	else cout << "Не палиндром\n";
 
 	system("pause");
