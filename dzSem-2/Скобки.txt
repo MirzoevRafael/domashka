@@ -1,0 +1,121 @@
+#include <iostream>
+
+using namespace std;
+
+struct stack
+{
+	char value;
+	stack* next = nullptr;
+};
+
+bool pop(stack*& text, char& value)
+{
+	if (!text) return false;
+
+	stack* rem = text;
+	value = text->value;
+	text = text->next;
+
+	delete rem;
+	return true;
+}
+
+void push(stack*& text, char value)
+{
+	stack* newel = new stack;
+	newel->value = value;
+	newel->next = text;
+	text = newel;
+}
+
+void showStack(stack*& text)
+{
+	char value;
+
+	while (pop(text, value))
+	{
+		cout << value << " ";
+	}
+	cout << endl;
+}
+
+bool checkBrack(stack*& text)
+{
+	int lrd = 0, lsq = 0, lfg = 0, lag = 0, rrd = 0, rsq = 0, rfg = 0, rag = 0;
+	char value;
+
+	while (pop(text, value))
+	{
+		if ((lrd > rrd) || (lsq > rsq) || (lfg > rfg) || (lag > rag))
+			return false;
+		switch (value)
+		{
+			case '(':
+				lrd++;
+				break;
+			case '[':
+				lsq++;
+				break;
+			case '{':
+				lfg++;
+				break;
+			case '<':
+				lag++;
+				break;
+			case ')':
+				rrd++;
+				break;
+			case ']':
+				rsq++;
+				break;
+			case '}':
+				rfg++;
+				break;
+			case '>':
+				rag++;
+				break;
+		}
+	}
+
+	if ((lrd == rrd) && (lsq == rsq) && (lfg == rfg) && (lag == rag))
+		return true;
+	else
+		return false;
+}
+
+char* peek(stack* text)
+{
+	if (!text) return nullptr;
+	return &text->value;
+}
+
+void clear(stack*& text)
+{
+	while (text)
+	{
+		stack* rem = text;
+		text = rem->next;
+		delete rem;
+	}
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+
+	stack* text = nullptr;
+	int sz = 6696;
+	char* ex = new char[sz];
+	cin.getline(ex,sz);
+	
+	for (int i = 0; i < strlen(ex); i++)
+	{
+		push(text, ex[i]);
+	}
+	delete[] ex;
+
+	if (checkBrack(text))
+		cout << "Выражение введено верно\n";
+	else
+		cout << "Выражение введено неверно\n";
+}
