@@ -4,83 +4,41 @@ using namespace std;
 
 struct stack
 {
-	char value;
+	char value = NULL;
+	int count = NULL;
 	stack* next = nullptr;
 };
 
-bool pop(stack*& text, char& value)
+bool pop(stack*& text, char& value, int& count)
 {
 	if (!text) return false;
 
 	stack* rem = text;
 	value = text->value;
+	count = text->count;
 	text = text->next;
 
 	delete rem;
 	return true;
 }
 
-void push(stack*& text, char value)
+void push(stack*& text, char value, int count)
 {
 	stack* newel = new stack;
 	newel->value = value;
+	newel->count = count;
 	newel->next = text;
 	text = newel;
 }
 
 void showStack(stack*& text)
 {
-	char value;
+	char value; int count;
 
-	while (pop(text, value))
+	while (pop(text, value, count))
 	{
 		cout << value << " ";
 	}
-	cout << endl;
-}
-
-bool checkBrack(stack*& text)
-{
-	int lrd = 0, lsq = 0, lfg = 0, lag = 0, rrd = 0, rsq = 0, rfg = 0, rag = 0;
-	char value;
-
-	while (pop(text, value))
-	{
-		if ((lrd > rrd) || (lsq > rsq) || (lfg > rfg) || (lag > rag))
-			return false;
-		switch (value)
-		{
-			case '(':
-				lrd++;
-				break;
-			case '[':
-				lsq++;
-				break;
-			case '{':
-				lfg++;
-				break;
-			case '<':
-				lag++;
-				break;
-			case ')':
-				rrd++;
-				break;
-			case ']':
-				rsq++;
-				break;
-			case '}':
-				rfg++;
-				break;
-			case '>':
-				rag++;
-				break;
-		}
-	}
-
-	if ((lrd == rrd) && (lsq == rsq) && (lfg == rfg) && (lag == rag))
-		return true;
-	else
-		return false;
 }
 
 char* peek(stack* text)
@@ -99,6 +57,94 @@ void clear(stack*& text)
 	}
 }
 
+void fillBrack(char ex[], stack*& text)
+{
+	for (int i = strlen(ex) - 1; i >= 0; i--)
+	{
+		if ((ex[i] == '(') || (ex[i] == '[') || (ex[i] == '{') || (ex[i] == '<') || (ex[i] == ')') || (ex[i] == ']') || (ex[i] == '}') || (ex[i] == '>'))
+			push(text, ex[i], i+1);
+	}
+}
+
+void checkBrack(stack* text)
+{
+	int lrdCount = 0, lsqCount = 0, lfgCount = 0, lagCount = 0, lrdNum = 0, lsqNum = 0, lfgNum = 0, lagNum = 0, trashNum = 0;
+	int rrdCount = 0, rsqCount = 0, rfgCount = 0, ragCount = 0, rrdNum = 0, rsqNum = 0, rfgNum = 0, ragNum = 0;
+	int rdTrash = 0, sqTrash = 0, fgTrash = 0, agTrash = 0;
+	char value, trash;
+	bool check = true;
+
+	cout << "Неверное поставленные скобки: ";
+
+	while (text)
+	{
+		if (lrdCount < rrdCount) rdTrash = rrdNum;
+		if (lsqCount < rsqCount) sqTrash = rsqNum;
+		if (lfgCount < rfgCount) fgTrash = rfgNum;
+		if (lagCount < ragCount) agTrash = ragNum;
+		pop(text, value, trashNum);
+		switch (value)
+		{
+			case '(':
+				lrdNum = trashNum; lrdCount++;
+				if ((text) && ((*peek(text) == ']') || (*peek(text) == '}') || (*peek(text) == '>')))
+				{
+					pop(text, trash, trashNum);
+					cout << trashNum << " "; check = false;
+				}
+				break;
+			case '[':
+				lsqNum = trashNum; lsqCount++;
+				if ((text) && ((*peek(text) == ')') || (*peek(text) == '}') || (*peek(text) == '>')))
+				{
+					pop(text, trash, trashNum);
+					cout << trashNum << " "; check = false;
+				}
+				break;
+			case '{':
+				lfgNum = trashNum; lfgCount++;
+				if ((text) && ((*peek(text) == ']') || (*peek(text) == ')') || (*peek(text) == '>')))
+				{
+					pop(text, trash, trashNum);
+					cout << trashNum << " "; check = false;
+				}
+				break;
+			case '<':
+				lagNum = trashNum; lagCount++;
+				if ((text) && ((*peek(text) == ']') || (*peek(text) == '}') || (*peek(text) == ')')))
+				{
+					pop(text, trash, trashNum);
+					cout << trashNum << " "; check = false;
+				}
+				break;
+			case ')':
+				rrdNum = trashNum; rrdCount++;
+				break;
+			case ']':
+				rsqNum = trashNum; rsqCount++;
+				break;
+			case '}':
+				rfgNum = trashNum; rfgCount++;
+				break;
+			case '>':
+				ragNum = trashNum; ragCount++;
+				break;
+		}
+	}
+
+	if (rdTrash != 0) cout << rdTrash << " ";
+	if (sqTrash != 0) cout << sqTrash << " ";
+	if (fgTrash != 0) cout << fgTrash << " ";
+	if (agTrash != 0) cout << agTrash << " ";
+
+	if (lrdCount > rrdCount) cout << lrdNum << " ";
+	if (lsqCount > rsqCount) cout << lsqNum << " ";
+	if (lfgCount > rfgCount) cout << lfgNum << " ";
+	if (lagCount > ragCount) cout << lagNum << " ";
+
+	if ((rdTrash == 0) && (sqTrash == 0) && (fgTrash == 0) && (agTrash == 0) && (lrdCount == rrdCount) && (lsqCount == rsqCount) && (lfgCount == rfgCount) && (lagCount == ragCount) && check) cout << "отсутствуют";
+}
+
 int main()
 {
 	setlocale(LC_ALL, "Russian");
@@ -106,16 +152,12 @@ int main()
 	stack* text = nullptr;
 	int sz = 6696;
 	char* ex = new char[sz];
-	cin.getline(ex,sz);
-	
-	for (int i = 0; i < strlen(ex); i++)
-	{
-		push(text, ex[i]);
-	}
-	delete[] ex;
+	cin.getline(ex, sz);
 
-	if (checkBrack(text))
-		cout << "Выражение введено верно\n";
-	else
-		cout << "Выражение введено неверно\n";
+	fillBrack(ex, text);
+	checkBrack(text);
+	delete[] ex;
+	clear(text);
+
+	return 0;
 }
