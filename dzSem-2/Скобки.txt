@@ -31,16 +31,6 @@ void push(stack*& text, char value, int count)
 	text = newel;
 }
 
-void showStack(stack*& text)
-{
-	char value; int count;
-
-	while (pop(text, value, count))
-	{
-		cout << value << " ";
-	}
-}
-
 char* peek(stack* text)
 {
 	if (!text) return nullptr;
