@@ -1,0 +1,131 @@
+#include <iostream>
+#include <fstream>
+#include "string.h"
+using namespace std;
+
+struct client
+{
+	char* name = new char[100];
+	char* gender = new char[10];
+	char* age = new char[4];
+	char* job = new char[100];
+	char* wage = new char[100];
+	char* purp = new char[9];
+};
+
+struct elem
+{
+	client user;
+	elem* next = nullptr;
+};
+
+struct queue
+{
+	elem* head = nullptr;
+	elem* tail = nullptr;
+	size_t size = 0;
+};
+
+//-----------------------------------------------------------------------------\\
+
+client createElem(char* name, char* gender, char* age, char* job, char* wage, char* purp)
+{
+	client user;
+	user.name = name;
+	user.gender = gender;
+	user.age = age;
+	user.job = job;
+	user.wage = wage;
+	user.purp = purp;
+
+	return user;
+}
+
+void enqueue(queue*& q, char* name, char* gender, char* age, char* job, char* wage, char* purp)
+{
+	client user = createElem(name, gender, age, job, wage, purp);
+	elem* newElem = new elem;
+	newElem->user = user;
+	if (q->size == 0)
+	{
+		q->head = q->tail = newElem;
+	}
+	else
+	{
+		q->tail->next = newElem;
+		q->tail = newElem;
+	}
+	q->size++;
+}
+
+bool dequeue(queue*& q, client& user)
+{
+	if (q->size == 0) return false;
+
+	elem* rem = q->head;
+	user = rem->user;
+	q->head = q->head->next;
+	delete rem;
+	q->size--;
+
+	return true;
+}
+
+void showQueue(queue*& q)
+{
+	int i = 0;
+	if (q->size == 0) return;
+	
+	client user;
+	if (dequeue(q, user))
+	{
+		cout << ++i << ". " << user.name << " " << user.gender << " " << user.age << " " << user.job << " " << user.wage << " " << user.purp << endl;
+	}
+}
+
+void clear(queue*& q)
+{
+	while (q->size > 0)
+	{
+		elem* rem = q->head;
+		q->head = q->head->next;
+		q->size--;
+		delete rem;
+	}
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+
+	queue* credit = new queue;
+	queue* debit = new queue;
+	char* name = new char[100];
+	char* buff = new char[65536];
+	ifstream f("file.txt");
+
+	if (f.is_open())
+	{
+		while (!f.eof())
+		{
+			f.getline(buff, 65536);
+			char* context = NULL;
+			char* name = strtok_s(buff, "|", &context);
+			char* gender = strtok_s(NULL, "|", &context);
+			char* age = strtok_s(NULL, "|", &context);
+			char* job = strtok_s(NULL, "|", &context);
+			char* wage = strtok_s(NULL, "|", &context);
+			char* purp = strtok_s(NULL, "|", &context);
+
+            if (!strcmp(purp, "кредит")) enqueue(credit, name, gender, age, job, wage, purp);
+			else if (!strcmp(purp, "вклад")) enqueue(debit, name, gender, age, job, wage, purp);
+		}
+	}
+
+	cout << "Кредит:\n";
+	showQueue(credit);
+	cout << "Вклад:\n";
+	showQueue(debit);
+
+	return 0;
+}
