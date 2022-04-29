@@ -109,7 +109,7 @@ int main()
 		while (!f.eof())
 		{
 			f.getline(buff, 65536);
-			char* context = NULL;
+			char* context = new char[65536];
 			char* name = strtok_s(buff, "|", &context);
 			char* gender = strtok_s(NULL, "|", &context);
 			char* age = strtok_s(NULL, "|", &context);
@@ -117,8 +117,8 @@ int main()
 			char* wage = strtok_s(NULL, "|", &context);
 			char* purp = strtok_s(NULL, "|", &context);
 
-            if (!strcmp(purp, "кредит")) enqueue(credit, name, gender, age, job, wage, purp);
-			else if (!strcmp(purp, "вклад")) enqueue(debit, name, gender, age, job, wage, purp);
+			if (!strcmp(purp, " кредит")) enqueue(credit, name, gender, age, job, wage, purp);
+			else if (!strcmp(purp, " вклад")) enqueue(debit, name, gender, age, job, wage, purp);
 		}
 	}
 
