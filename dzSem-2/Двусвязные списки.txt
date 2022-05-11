@@ -1,0 +1,108 @@
+#include <iostream>
+
+using namespace std;
+
+struct elem
+{
+    int value;
+    elem* next = nullptr;
+    elem* prev = nullptr;
+};
+
+struct list
+{
+    elem* first = nullptr;
+    elem* last = nullptr;
+    int count = 0;
+};
+
+/*--------------------------------------------------------*/
+
+void add(list& sum, int data)
+{
+    elem* newel = new elem;
+    newel->value = data;
+    sum.count++;
+    if (!sum.first)
+    {
+        sum.first = sum.last = newel;
+    }
+    else
+    {
+        newel->prev = sum.last;
+        sum.last->next = newel;
+        sum.last = newel;
+    }
+}
+
+void clear(list& sum)
+{
+    elem* rem;
+    while (sum.first)
+    {
+        rem = sum.first;
+        sum.first = sum.first->next;
+        delete rem;
+    }
+    sum.last = nullptr;
+    sum.count = 0;
+}
+
+void show_list(const list& sum, bool reversed = false)
+{
+    elem* curr = reversed ? sum.last : sum.first;
+    if (!curr) cout << "Список пуст\n";
+    else while (curr)
+    {
+        elem* cmp = reversed ? sum.first : sum.last;
+        cout << curr->value << ((curr == cmp) ? "\n" : "");
+        curr = reversed ? curr->prev : curr->next;
+    }
+}
+
+void fill_list(list& sum, char* num)
+{
+    for (int i = 0; i < strlen(num); i++) add(sum, num[i] - '0');
+}
+
+void addition(list& sum, char* num1, char* num2)
+{
+    fill_list(sum, num1);
+    elem* curr = sum.last;
+    int value;
+    for (int i = strlen(num2) - 1; i >= 0; i--)
+    {
+        value = num2[i] - '0';
+        curr->value = curr->value + value;
+        if (curr->prev) curr->prev->value = curr->prev->value + (curr->value / 10);
+        curr->value = curr->value % 10;
+        curr = curr->prev;
+    }
+    if (sum.first->value == 0)
+    {
+        elem* del = sum.first;
+        sum.first = sum.first->next;
+        delete del;
+    }
+    cout << endl;
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+
+    list sum;
+    add(sum, 0);
+    char* num1 = new char[6696];
+    char* num2 = new char[6696];
+    cout << "Введите первое число: ";
+    cin.getline(num1, 6696);
+    cout << "Введите второе число: ";
+    cin.getline(num2, 6696);
+    if (strlen(num1) > strlen(num2)) addition(sum, num1, num2);
+    else addition(sum, num2, num1);
+    show_list(sum);
+    
+
+    return 0;
+}
