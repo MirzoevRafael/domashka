@@ -1,0 +1,238 @@
+#include <iostream>
+#include <fstream>
+#include <windows.h>
+
+using namespace std;
+
+struct node
+{
+	char* name = new char[128];
+	int mark;
+	node* left = nullptr;
+	node* right = nullptr;
+};
+
+struct tree
+{
+	int* height = 0;
+	node* root = nullptr;
+};
+
+/*--------------------------------------------------------------*/
+
+int parse_int(char* num)
+{
+	if (!num) return NULL;
+	int x = 0;
+	for (int i = 0; i < strlen(num); i++)
+	{
+		if (num[i] == ' ') i++;
+		x += (num[i] - '0') * pow(10, strlen(num) - i - 1);
+	}
+	return x;
+}
+
+void add_by_mark(node*& head, char* name, int mark)
+{
+	node* elem = new node;
+	elem->name = name;
+	elem->mark = mark;
+	if (!head)
+	{
+		head = elem;
+		return;
+	}
+
+	node* curr = head;
+	while (curr)
+	{
+		if (mark == curr->mark)
+		{
+			if (strcmp(name, curr->name) > 0)
+			{
+				elem->right = curr->right;
+				curr->right = elem;
+				return;
+			}
+			if (strcmp(name, curr->name) < 0)
+			{
+				elem->left = curr->left;
+				curr->left = elem;
+				return;
+			}
+		}
+		if (mark > curr->mark)
+		{
+			if (curr->right)
+			{
+				curr = curr->right;
+			}
+			else
+			{
+				curr->right = elem;
+				return;
+			}
+		}
+		if (mark < curr->mark)
+		{
+			if (curr->left)
+			{
+				curr = curr->left;
+			}
+			else
+			{
+				curr->left = elem;
+				return;
+			}
+		}
+	}
+}
+
+void add_by_name(node*& head, char* name, int mark)
+{
+	node* elem = new node;
+	elem->name = name;
+	elem->mark = mark;
+	if (!head)
+	{
+		head = elem;
+		return;
+	}
+
+	node* curr = head;
+	while (curr)
+	{
+		if (strcmp(name, curr->name) == 0)
+		{
+			if (mark > curr->mark)
+			{
+				elem->right = curr->right;
+				curr->right = elem;
+				return;
+			}
+			if (mark < curr->mark)
+			{
+				elem->left = curr->left;
+				curr->left = elem;
+				return;
+			}
+		}
+		if (strcmp(name, curr->name) > 0)
+		{
+			if (curr->right)
+			{
+				curr = curr->right;
+			}
+			else
+			{
+				curr->right = elem;
+				return;
+			}
+		}
+		if (strcmp(name, curr->name) < 0)
+		{
+			if (curr->left)
+			{
+				curr = curr->left;
+			}
+			else
+			{
+				curr->left = elem;
+				return;
+			}
+		}
+	}
+}
+
+void show_tree_ordered(node* head)
+{
+	if (!head) return;
+	show_tree_ordered(head->left);
+	cout << head->name << head->mark << endl;
+	show_tree_ordered(head->right);
+}
+
+void clear(node*& head)
+{
+	if (!head) return;
+	if (head->left) clear(head->left);
+	if (head->right) clear(head->right);
+	delete head;
+}
+
+void fill_by_mark(node*& head)
+{
+	ifstream f;
+	f.open("file.txt");
+	while (!f.eof())
+	{
+		char* buff = new char[256];
+		char* temp;
+		f.getline(buff, 256);
+		char* name = strtok_s(buff, "|", &temp);
+		int mark = parse_int(strtok_s(NULL, "|", &temp));
+		add_by_mark(head, name, mark);
+	}
+}
+
+void fill_by_name(node*& head)
+{
+	ifstream f;
+	f.open("file.txt");
+	while (!f.eof())
+	{
+		char* buff = new char[256];
+		char* temp;
+		f.getline(buff, 256);
+		char* name = strtok_s(buff, "|", &temp);
+		int mark = parse_int(strtok_s(NULL, "|", &temp));
+		add_by_name(head, name, mark);
+	}
+}
+
+void find_by_name(node* head, char letter)
+{
+	if (!head) return;
+	find_by_name(head->left, letter);
+	if ((head->name[0]) == letter)
+	{
+		cout << head->name << head->mark << endl;
+	}
+	find_by_name(head->right, letter);
+}
+
+int main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	setlocale(LC_ALL, ".1251");
+
+	tree students;
+	node* head = nullptr;
+	students.root = head;
+	int choice = 0;
+	while (true)
+	{
+		cout << "Введите 1, если хотите упорядочить по фамилии, и 2, если хотите упорядочить по среднему баллу:\n";
+		cin >> choice;
+		if (choice == 1)
+		{
+			fill_by_name(head);
+			break;
+		}
+		else if (choice == 2)
+		{
+			fill_by_mark(head);
+			break;
+		}
+	}
+	show_tree_ordered(head);
+	cout << "Введите первую букву фамилии: \n";
+	char letter;
+	cin >> letter;
+	find_by_name(head, letter);
+	clear(head);
+	delete &students;
+
+	return 0;
+}
