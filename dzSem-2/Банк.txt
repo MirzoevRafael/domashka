@@ -75,9 +75,9 @@ void showQueue(queue*& q)
 {
 	int i = 0;
 	if (q->size == 0) return;
-	
+
 	client user;
-	if (dequeue(q, user))
+	while (dequeue(q, user))
 	{
 		cout << ++i << ". " << user.name << " " << user.gender << " " << user.age << " " << user.job << " " << user.wage << " " << user.purp << endl;
 	}
@@ -100,25 +100,24 @@ int main()
 
 	queue* credit = new queue;
 	queue* debit = new queue;
-	char* name = new char[100];
-	char* buff = new char[65536];
+	
 	ifstream f("file.txt");
 
 	if (f.is_open())
 	{
 		while (!f.eof())
 		{
+			char* buff = new char[65536];
 			f.getline(buff, 65536);
-			char* context = new char[65536];
+			char* context;
 			char* name = strtok_s(buff, "|", &context);
 			char* gender = strtok_s(NULL, "|", &context);
 			char* age = strtok_s(NULL, "|", &context);
 			char* job = strtok_s(NULL, "|", &context);
 			char* wage = strtok_s(NULL, "|", &context);
 			char* purp = strtok_s(NULL, "|", &context);
-
-			if (!strcmp(purp, " кредит")) enqueue(credit, name, gender, age, job, wage, purp);
-			else if (!strcmp(purp, " вклад")) enqueue(debit, name, gender, age, job, wage, purp);
+			if (strcmp(purp, " кредит") == 0) enqueue(credit, name, gender, age, job, wage, purp);
+			else if (strcmp(purp, " вклад") == 0) enqueue(debit, name, gender, age, job, wage, purp);
 		}
 	}
 
