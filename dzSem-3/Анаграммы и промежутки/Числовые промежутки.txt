@@ -1,0 +1,29 @@
+int[] FindDist(int[] nums)
+{
+    int[] dist = { 0, 0 };
+    for (int i = 1; i < nums.Length; i++)
+    {
+        for (int j = 0; j < i; j++)
+        {
+            if (nums[i] - nums[j] > dist[1] - dist[0])
+            {
+                dist[1] = nums[i];
+                dist[0] = nums[j];
+            }
+            else if (nums[j] - nums[i] > dist[1] - dist[0])
+            {
+                dist[1] = nums[j];
+                dist[0] = nums[i];
+            }
+        }
+    }
+    return dist;
+}
+
+Console.WriteLine("Введите число эл-тов массива: ");
+int n = Convert.ToInt32(Console.ReadLine());
+int[] nums = new int[n];
+Console.WriteLine("Введите эл-ты массива через пробел: ");
+nums = Console.ReadLine().Split(' ').Select(s => int.Parse(s)).ToArray();
+int[] dist = FindDist(nums);
+Console.WriteLine("{0}, {1}", dist[0], dist[1]);

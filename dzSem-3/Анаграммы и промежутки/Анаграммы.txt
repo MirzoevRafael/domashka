@@ -1,0 +1,21 @@
+bool IfAnagram(string str1, string str2)
+{
+    str1 = str1.Replace(" ", String.Empty);
+    str2 = str2.Replace(" ", String.Empty);
+
+    if (str1.Length != str2.Length) return false;
+    while (str1 != String.Empty)
+    {
+        if (str2.IndexOf(str1[0]) == -1) return false;
+        str2 = str2.Remove(str2.IndexOf(str1[0]), 1);
+        str1 = str1.Remove(0, 1);
+    }
+    return true;
+}
+
+string str1 = Console.ReadLine();
+string str2 = Console.ReadLine();
+str1 = str1.ToLower();
+str2 = str2.ToLower();
+if (IfAnagram(str1, str2)) Console.WriteLine("Yes");
+else Console.WriteLine("No");
