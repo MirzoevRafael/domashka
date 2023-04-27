@@ -14,11 +14,11 @@ namespace Ball
         private BufferedGraphics _bg;
         private int _id = 1;
         public event SquareAppeared squareAppeared;
-        public event ScoreUpdate squareScoreUpdate;
-        private Database db;
+        private Database _db;
 
         private volatile int objectsPainted = 0;
         public Thread PainterThread => t;
+        public Database DB { get { return _db; } }
         public Graphics MainGraphics
         {
             get => _mainGraphics;
@@ -52,31 +52,28 @@ namespace Ball
         public Painter(Graphics mainGraphics)
         {
             MainGraphics = mainGraphics;
-            db = new();
+            _db = new();
         }
 
 
         public void AddSquare(MouseEventArgs e)
         {
             Square square = new Square(e.X, e.Y, _id++);
-            //Circle c = new Circle(50, e.X - 25, e.Y - 25, Color.FromArgb(250, 210, 210));
-            //try
-            //{
                 if (e.X - 30 >= 0 && e.X + 30 <= _containerSize.Width && e.Y - 30 >= 0 && 
                     e.Y + 30 <= _containerSize.Height && CheckSqs(e))
                 {
-                    db.NewSquare(square);
-                    lock (locker)
+                    try
                     {
-                        //c.Paint(MainGraphics);
-                        _squares.Add(square);
-                        squareAppeared(square);
-                        square.Paint(_mainGraphics);
-                        AddCircle(e, square.COLOR, square.Id);
+                        lock (locker)
+                        {
+                            _squares.Add(square);
+                            squareAppeared(square);
+                            square.Paint(_mainGraphics);
+                            AddCircle(e, square.COLOR, square.Id);
+                        }
                     }
+                    catch { }
                 }
-            //}
-            //catch { }
         }
         public bool CheckSqs(MouseEventArgs e)
         {
@@ -162,8 +159,6 @@ namespace Ball
         {
             lock (locker)
             {
-                //foreach (var animator1 in _animators)
-                //{
                     foreach (var animator2 in _animators)
                     {
                         if (!(animator1.Id == animator2.Id))
@@ -177,7 +172,6 @@ namespace Ball
                         }
                     }
                     return null;
-                //}
             }
         }
         
@@ -199,11 +193,14 @@ namespace Ball
                         foreach (var square in _squares)
                         {
                             if (square.Id == crashedBalls[1].Id)
-                            { 
-                                square.Score++;
-                                squareScoreUpdate(square.Id);
-                                db.NewScore(square);
-                                break;
+                            {
+                                //try
+                                //{
+                                    square.Score++;
+                                    _db.NewScore(square);
+                                    break;
+                                //}
+                                //catch { }
                             }
                         }
                         break;
