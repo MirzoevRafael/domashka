@@ -58,7 +58,6 @@ namespace Ball
 
         public void AddSquare(MouseEventArgs e)
         {
-            Square square = new Square(e.X, e.Y, _id++);
                 if (e.X - 30 >= 0 && e.X + 30 <= _containerSize.Width && e.Y - 30 >= 0 && 
                     e.Y + 30 <= _containerSize.Height && CheckSqs(e))
                 {
@@ -66,6 +65,7 @@ namespace Ball
                     {
                         lock (locker)
                         {
+			    Square square = new Square(e.X, e.Y, _id++);
                             _squares.Add(square);
                             squareAppeared(square);
                             square.Paint(_mainGraphics);
